@@ -4,6 +4,7 @@ from keras.datasets import mnist
 from keras.layers import Dense, Input
 from keras.layers.convolutional import Conv2D
 from keras.models import Model
+from keras.optimizers import SGD
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -37,5 +38,7 @@ model = Model(inputs = input_img, outputs = x)
 
 model.summary()
 
-model.compile(optimizer='adam', loss='mse')
+
+sgd = SGD(lr=0.1, decay=1e-6)   
+model.compile(optimizer=sgd, loss='mse')
 model.fit(image_noise, x_train, epochs=20, batch_size=256, shuffle=True)
