@@ -46,9 +46,10 @@ model.fit(image_noise, x_train, epochs=20, batch_size=256, shuffle=True)
 model = load_model('./models/DenoiseCNN.h5')
 
 # 在测试集中测试
-ind = 1200
+ind = 3000
 img = x_test[ind,:,:]
-alpha = 0.6
+alpha = 0.4
+noise = np.random.rand(28,28)
 image_noise  = alpha*img + (1-alpha)*noise*255
 image_noise = np.expand_dims(image_noise, axis = 0)
 image_noise = np.expand_dims(image_noise, axis = 3)
@@ -56,19 +57,25 @@ image_noise = np.expand_dims(image_noise, axis = 3)
 image_denoise = model.predict(image_noise)
 
 #plt.figure()
-plt.subplot(1,3,1)
+plt.subplot(2,2,1)
 plt.title('image noise')
 plt.imshow(image_noise[0,:,:,0])
 plt.axis('off')
 #plt.figure()
-plt.subplot(1,3,2)
+plt.subplot(2,2,2)
 plt.title('image original')
 plt.imshow(img)
 plt.axis('off')
 #plt.figure()
-plt.subplot(1,3,3)
+plt.subplot(2,2,3)
 plt.title('image denoise')
 plt.imshow(image_denoise[0,:,:,0])
 plt.axis('off')
 
+image_denoise_2 = model.predict(image_denoise)
+
+plt.subplot(2,2,4)
+plt.title('image denoise*2')
+plt.imshow(image_denoise_2[0,:,:,0])
+plt.axis('off')
 
