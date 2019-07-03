@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from keras.datasets import mnist
 from keras.layers import Dense, Input
 from keras.layers.convolutional import Conv2D
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.optimizers import SGD
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -44,15 +44,14 @@ sgd = SGD(lr=0.1, decay=1e-6)
 model.compile(optimizer=sgd, loss='mse')
 model.fit(image_noise, x_train, epochs=20, batch_size=256, shuffle=True)
 
+model.save('./models/DenoiseCNN.h5')
+model = load_model('./models/DenoiseCNN.h5')
 
 
-
-ind = 10
-
+ind = 103
 img = x_test[ind,:,:]
+alpha = 0.5
 image_noise  = alpha*img + (1-alpha)*noise*255
-
-
 image_noise = np.expand_dims(image_noise, axis = 0)
 image_noise = np.expand_dims(image_noise, axis = 3)
 
@@ -64,3 +63,5 @@ plt.figure()
 plt.imshow(img)
 plt.figure()
 plt.imshow(image_denoise[0,:,:,0])
+
+
