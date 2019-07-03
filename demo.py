@@ -20,9 +20,10 @@ for i in range(len(x_train)):
     
 image_noise = np.array(image_noise)
 
-
-#plt.imshow(image_noise[1,:,:])
-#plt.imshow(x_train[1,:,:])
+plt.figure()
+plt.imshow(image_noise[1,:,:,0])
+plt.figure()
+plt.imshow(x_train[1,:,:,0])
 
 
 image_noise = np.expand_dims(image_noise, axis = 3)
@@ -42,3 +43,24 @@ model.summary()
 sgd = SGD(lr=0.1, decay=1e-6)   
 model.compile(optimizer=sgd, loss='mse')
 model.fit(image_noise, x_train, epochs=20, batch_size=256, shuffle=True)
+
+
+
+
+ind = 10
+
+img = x_test[ind,:,:]
+image_noise  = alpha*img + (1-alpha)*noise*255
+
+
+image_noise = np.expand_dims(image_noise, axis = 0)
+image_noise = np.expand_dims(image_noise, axis = 3)
+
+image_denoise = model.predict(image_noise)
+
+plt.figure()
+plt.imshow(image_noise[0,:,:,0])
+plt.figure()
+plt.imshow(img)
+plt.figure()
+plt.imshow(image_denoise[0,:,:,0])
