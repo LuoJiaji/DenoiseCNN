@@ -72,6 +72,7 @@ plt.title('image denoise')
 plt.imshow(image_denoise[0,:,:,0])
 plt.axis('off')
 
+# 测试二次滤波效果
 image_denoise_2 = model.predict(image_denoise)
 
 plt.subplot(2,2,4)
