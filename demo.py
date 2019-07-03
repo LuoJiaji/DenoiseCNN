@@ -6,6 +6,7 @@ from keras.layers.convolutional import Conv2D
 from keras.models import Model, load_model
 from keras.optimizers import SGD
 
+# 加载数据
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 alpha = 0.6
@@ -29,7 +30,7 @@ plt.imshow(x_train[1,:,:,0])
 image_noise = np.expand_dims(image_noise, axis = 3)
 x_train = np.expand_dims(x_train, axis = 3)
 
-
+# 定义模型
 input_img = Input(shape=(28,28,1))
 x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1')(input_img)
 x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2')(x)
@@ -39,16 +40,19 @@ model = Model(inputs = input_img, outputs = x)
 
 model.summary()
 
-
+# 模型训练
 sgd = SGD(lr=0.1, decay=1e-6)   
 model.compile(optimizer=sgd, loss='mse')
 model.fit(image_noise, x_train, epochs=20, batch_size=256, shuffle=True)
 
+
+# 模型的保存于加载
 model.save('./models/DenoiseCNN.h5')
 model = load_model('./models/DenoiseCNN.h5')
 
 
-ind = 103
+# 在测试集中测试
+ind = 115
 img = x_test[ind,:,:]
 alpha = 0.5
 image_noise  = alpha*img + (1-alpha)*noise*255
