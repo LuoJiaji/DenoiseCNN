@@ -63,20 +63,20 @@ model = Model(inputs = input_img, outputs = [re_out,x])
 model.compile(optimizer=SGD(), 
               loss={'re_out': 'mse', 'fc_out': 'categorical_crossentropy'}, 
               loss_weights={'re_out': 1.,'fc_out': 1.},
-              metrics=['mae','accuracy'])
+              metrics={'re_out':'mae','fc_out':'accuracy'})
 
 #singleloss 模型
-model = Model(inputs = input_img, outputs = x)
-model.compile(optimizer=SGD(), 
-              loss={'categorical_crossentropy'}, 
-              metrics=['accuracy'])
+#model = Model(inputs = input_img, outputs = x)
+#model.compile(optimizer=SGD(), 
+#              loss={'categorical_crossentropy'}, 
+#              metrics=['accuracy'])
 
 
 model.summary()
 plot_model(model, to_file='./model_visualization/DenoiseCNN_multiloss.png',show_shapes=True)
 
 
-model.fit(image_noise, [x_train, y_train], epochs=20, batch_size=128, shuffle=True)
+model.fit(image_noise, [x_train, y_train], epochs=20, batch_size=64, shuffle=True)
 
 
 tmp = x_test[1]
