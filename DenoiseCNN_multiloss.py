@@ -58,27 +58,48 @@ x = Flatten(name='flatten')(x)
 x = Dense(128, activation='relu', name='fc1')(x)
 x = Dense(10, activation='softmax', name='fc_out')(x)
 
+
 #multiloss 模型
-model = Model(inputs = input_img, outputs = [re_out,x])
-model.compile(optimizer=SGD(), 
-              loss={'re_out': 'mse', 'fc_out': 'categorical_crossentropy'}, 
-              loss_weights={'re_out': 1.,'fc_out': 1.},
-              metrics={'re_out':'mae','fc_out':'accuracy'})
+#model = Model(inputs = input_img, outputs = [re_out,x])
+#model.compile(optimizer=SGD(), 
+#              loss={'re_out': 'mse', 'fc_out': 'categorical_crossentropy'}, 
+#              loss_weights={'re_out': 1.,'fc_out': 1.},
+#              metrics={'re_out':'mae','fc_out':'accuracy'})
+
+
+#model.summary()
+#plot_model(model, to_file='./model_visualization/DenoiseCNN_multiloss.png',show_shapes=True)
+#
+#
+#model.fit(image_noise, [x_train, y_train], epochs=20, batch_size=64, shuffle=True)
+
+
 
 #singleloss 模型
-#model = Model(inputs = input_img, outputs = x)
-#model.compile(optimizer=SGD(), 
-#              loss={'categorical_crossentropy'}, 
-#              metrics=['accuracy'])
-
-
+model = Model(inputs = input_img, outputs = x)
+model.compile(optimizer=SGD(), 
+              loss='categorical_crossentropy', 
+              metrics=['accuracy'])
 model.summary()
-plot_model(model, to_file='./model_visualization/DenoiseCNN_multiloss.png',show_shapes=True)
+#plot_model(model, to_file='./model_visualization/DenoiseCNN_multiloss.png', show_shapes=True)
+#
+#
+model.fit(image_noise,  y_train, epochs=20, batch_size=64, shuffle=True)
 
 
-model.fit(image_noise, [x_train, y_train], epochs=20, batch_size=64, shuffle=True)
 
 
-tmp = x_test[1]
-tmp = np.expand_dims(tmp, axis = 0)
-re = model.predict(tmp)
+#singleloss 模型
+model = Model(inputs = input_img, outputs = re_out)
+model.compile(optimizer=SGD(), 
+              loss='mse')
+model.summary()
+#plot_model(model, to_file='./model_visualization/DenoiseCNN_multiloss.png', show_shapes=True)
+#
+#
+model.fit(image_noise,  x_train, epochs=20, batch_size=64, shuffle=True)
+
+
+#tmp = x_test[1]
+#tmp = np.expand_dims(tmp, axis = 0)
+#re = model.predict(tmp)
