@@ -22,12 +22,28 @@ for i in range(len(x_train)):
     x_train_noise.append(img)
 x_train_noise = np.array(x_train_noise)
 
-plt.figure()
-plt.imshow(x_train_noise[1,:,:])
-plt.figure()
-plt.imshow(x_train[1,:,:])
+#plt.figure()
+#plt.imshow(x_train_noise[1,:,:])
+#plt.figure()
+#plt.imshow(x_train[1,:,:])
+
+
+x_test_noise = []
+for i in range(len(x_test)):
+    img = x_test[i,:,:]
+    noise = np.random.rand(28,28)
+    img  = alpha*img + (1-alpha)*noise*255
+    x_test_noise.append(img)
+x_test_noise = np.array(x_test_noise)
+
+#plt.figure()
+#plt.imshow(x_test_noise[10,:,:])
+#plt.figure()
+#plt.imshow(x_test[10,:,:])
+
 
 x_train_noise = np.expand_dims(x_train_noise, axis = 3)
+x_test_noise = np.expand_dims(x_test_noise, axis = 3)
 x_train = np.expand_dims(x_train, axis = 3)
 x_test = np.expand_dims(x_test, axis = 3)
 
@@ -37,6 +53,9 @@ x_test = x_test.astype('float32')
 
 x_train /= 255
 x_test /= 255
+x_train_noise /= 255
+x_test_noise /= 255
+
 y_train = np_utils.to_categorical(y_train, num_classes = 10)
 y_test = np_utils.to_categorical(y_test, num_classes = 10)
 
