@@ -80,6 +80,7 @@ x = Dropout(0.5)(x)
 x = Dense(10, activation='softmax', name='fc_out')(x)
 
 
+
 #multiloss 模型
 model_all = Model(inputs = input_img, outputs = [re_out,x])
 model_all.compile(optimizer=SGD(), 
@@ -90,29 +91,37 @@ model_all.summary()
 plot_model(model_all, to_file='./model_visualization/DenoiseCNN_multiloss.png',show_shapes=True)
 model_all.fit(x_train_noise, [x_train, y_train], epochs = 40, batch_size = 64, shuffle = True)
 
+model_all.save('./models/DenoiseCNN_all.h5')
+model_all = load_model('./models/DenoiseCNN_all.h5')
+
+pre_all = model_all.predict(x_test_noise)
+pre_cl = pre_all[1]
+pre_cl = np.argmax(pre_cl, axis = 1)
+label = np.argmax(y_test, axis = 1)
+acc_all =np.mean(pre_cl == label)
+
+
 
 #singleloss 分类模型
-model_cl = Model(inputs = input_img, outputs = x)
-model_cl.compile(optimizer=SGD(), 
-              loss='categorical_crossentropy', 
-              metrics=['accuracy'])
-model_cl.summary()
-plot_model(model_cl, to_file='./model_visualization/DenoiseCNN_classify.png', show_shapes=True)
-model_cl.fit(x_train_noise, y_train, epochs = 40, batch_size = 64, shuffle = True)
+#model_cl = Model(inputs = input_img, outputs = x)
+#model_cl.compile(optimizer=SGD(), loss='categorical_crossentropy', metrics=['accuracy'])
+#model_cl.summary()
+#plot_model(model_cl, to_file='./model_visualization/DenoiseCNN_classify.png', show_shapes=True)
+#model_cl.fit(x_train_noise, y_train, epochs = 40, batch_size = 64, shuffle = True)
 
-pre = model_cl.predict(x_test)
-pre = np.argmax(pre, axis = 1)
-label = np.argmax(y_test, axis = 1)
-acc =np.mean(pre==label)
+
+#pre = model_cl.predict(x_test)
+#pre = np.argmax(pre, axis = 1)
+#label = np.argmax(y_test, axis = 1)
+#acc =np.mean(pre==label)
 
 
 #singleloss 重构模型
-model_re = Model(inputs = input_img, outputs = re_out)
-model_re.compile(optimizer=SGD(), 
-              loss='mse')
-model_re.summary()
-plot_model(model_re, to_file='./model_visualization/DenoiseCNN_reconstruction.png', show_shapes=True)
-model_re.fit(x_train_noise, x_train, epochs = 40, batch_size = 64, shuffle = True)
+#model_re = Model(inputs = input_img, outputs = re_out)
+#model_re.compile(optimizer=SGD(), loss='mse')
+#model_re.summary()
+#plot_model(model_re, to_file='./model_visualization/DenoiseCNN_reconstruction.png', show_shapes=True)
+#model_re.fit(x_train_noise, x_train, epochs = 40, batch_size = 64, shuffle = True)
 
 
 
