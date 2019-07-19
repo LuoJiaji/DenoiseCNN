@@ -12,7 +12,7 @@ from keras.layers.normalization import BatchNormalization
 
 # 加载数据
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
-alpha = 0.6
+alpha = 0.5
 
 x_train_noise = []
 for i in range(len(x_train)):
@@ -98,16 +98,26 @@ pre_all = model_all.predict(x_test_noise)
 pre_cl = pre_all[1]
 pre_cl = np.argmax(pre_cl, axis = 1)
 label = np.argmax(y_test, axis = 1)
-acc_all =np.mean(pre_cl == label)
-
+acc_all = np.mean(pre_cl == label)
+print('accuracy_all:',acc_all)
 
 
 #singleloss 分类模型
-#model_cl = Model(inputs = input_img, outputs = x)
-#model_cl.compile(optimizer=SGD(), loss='categorical_crossentropy', metrics=['accuracy'])
-#model_cl.summary()
-#plot_model(model_cl, to_file='./model_visualization/DenoiseCNN_classify.png', show_shapes=True)
-#model_cl.fit(x_train_noise, y_train, epochs = 40, batch_size = 64, shuffle = True)
+model_cl = Model(inputs = input_img, outputs = x)
+model_cl.compile(optimizer=SGD(), loss='categorical_crossentropy', metrics=['accuracy'])
+model_cl.summary()
+plot_model(model_cl, to_file='./model_visualization/DenoiseCNN_classify.png', show_shapes=True)
+model_cl.fit(x_train_noise, y_train, epochs = 40, batch_size = 64, shuffle = True)
+
+model_cl.save('./models/DenoiseCNN_cl.h5')
+model_cl = load_model('./models/DenoiseCNN_cl.h5')
+
+pre_cl = model_cl.predict(x_test_noise)
+#pre_cl = pre_all[1]
+pre_cl = np.argmax(pre_cl, axis = 1)
+label = np.argmax(y_test, axis = 1)
+acc_cl =np.mean(pre_cl == label)
+print('accuracy_cl:',acc_cl)
 
 
 #pre = model_cl.predict(x_test)
